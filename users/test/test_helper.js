@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-before((done)=> {
+before((done) => {
     mongoose.connect('mongodb://localhost/users_test');
     mongoose.connection
         .once('open', () => {
@@ -13,7 +13,12 @@ before((done)=> {
 });
 
 beforeEach((done) => {
-    mongoose.connection.collections.users.drop(() => {
-        done();
+    const { users, blogposts, comments } = mongoose.connection.collections;
+    users.drop(() => {
+        blogposts.drop(() => {
+            comments.drop(() => {
+                done();
+            })
+        })
     })
 })
