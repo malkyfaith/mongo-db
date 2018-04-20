@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const assert = require('assert');
 const User = require('../src/user');
 const Comment = require('../src/comment');
 const BlogPost = require('../src/blogPost');
@@ -17,9 +18,10 @@ describe('Assocaition test', () => {
         Promise.all([malkeet.save(), blogPost.save(), comment.save()]).then(() => done());
     })
 
-    it('save a relation between user and blogpost', (done) => {
-        User.findOne({ name: 'Malkeet' }).then((user) => {
+    it.only('save a relation between user and blogpost', (done) => {
+        User.findOne({ name: 'Malkeet' }).populate('blogPosts').then((user) => {
             console.log(JSON.stringify(user));
+            assert(user.blogPosts[0].title === 'JS is great');
             done();
         })
     })
